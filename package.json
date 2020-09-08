@@ -1,0 +1,12 @@
+{
+    "name": "timer-static",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "git@github.com:Nightlue2/timer-1.git",
+    "author": "Nightlue2 <basicperfect@outlook.com>",
+    "license": "MIT",
+    "scripts": {
+        "start": "parcel src/index.html",
+        "build": "parcel build src/index.html"
+    }
+}
