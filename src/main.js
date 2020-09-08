@@ -133,7 +133,6 @@ const timeObj = {
             getCurrentTime();
             if (endTime[0] && endTime[1] && endTime[2]) {
                 let diff = calcSeconds(endTime) - calcSeconds(currentTime);
-                console.log(diff);
                 if (diff) {
                     const minute = Math.floor(diff / 60);
                     if (minute < 10) minute = "0" + minute;
