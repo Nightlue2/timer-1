@@ -137,11 +137,19 @@ var getCurrentTime = function getCurrentTime() {
   currentTime = [date.getHours(), date.getMinutes(), date.getSeconds(), date.getTime()];
 };
 
-var getEndTime = function getEndTime() {
-  if (currentTime[1] + 40 >= 60) {
-    endTime = [currentTime[0] + 1, (currentTime[1] + 40) % 60, currentTime[2]];
+var getEndTime = function getEndTime(seconds) {
+  if (seconds) {
+    minutes = Math.floor((seconds + currentTime[2]) / 60);
+    endTime[2] = (seconds + currentTime[2]) % 60;
+    hours = Math.floor((minutes + currentTime[1]) / 60);
+    endTime[1] = (minutes + currentTime[1]) % 60;
+    endTime[0] = hours + currentTime[0];
   } else {
-    endTime = [currentTime[0], currentTime[1] + 40, currentTime[2]];
+    if (currentTime[1] + 40 >= 60) {
+      endTime = [currentTime[0] + 1, (currentTime[1] + 40) % 60, currentTime[2]];
+    } else {
+      endTime = [currentTime[0], currentTime[1] + 40, currentTime[2]];
+    }
   }
 };
 
@@ -201,15 +209,15 @@ var timeObj = {
   restSeconds: null,
   timeoutId: null,
   intervalId: null,
-  init: function init() {
+  init: function init(seconds) {
     this.clear();
-    this.refresh();
+    this.refresh(seconds);
     this.historyTime = calcSeconds(currentTime);
     this.timer();
   },
-  refresh: function refresh() {
+  refresh: function refresh(seconds) {
     getCurrentTime();
-    getEndTime();
+    getEndTime(seconds);
   },
   clear: function clear() {
     if (this.timeoutId) {
@@ -225,25 +233,17 @@ var timeObj = {
   pause: function pause() {
     if (this.timeoutId) {
       this.clear();
-      this.refresh();
+      getCurrentTime();
       this.restSeconds = 40 * 60 - (calcSeconds(currentTime) - this.historyTime);
     }
   },
   play: function play() {
     if (this.restSeconds) {
-      this.historyTime = null;
-      this.init();
+      this.init(this.restSeconds);
       this.restSeconds = null;
     } else if (this.timeoutId) {
       var answer = confirm("当前正在计时，确定要重置吗？");
-
-      if (answer) {
-        this.clear();
-        this.restSeconds = null;
-        this.init();
-      }
-    } else {
-      this.init();
+      answer ? this.init() : console.log();
     }
   },
   stop: function stop() {
@@ -259,7 +259,8 @@ var timeObj = {
       getCurrentTime();
 
       if (endTime[0] && endTime[1] && endTime[2]) {
-        var diff = calcTime(endTime) - calcTime(currentTime);
+        var diff = calcSeconds(endTime) - calcSeconds(currentTime);
+        console.log(diff);
 
         if (diff) {
           var minute = Math.floor(diff / 60);
@@ -271,7 +272,7 @@ var timeObj = {
           clearInterval(_this.intervalId);
         }
       }
-    }, 60000);
+    }, 1000);
     this.timeoutId = setTimeout(function () {
       changeTitle.call(this);
       document.title = "计时器";

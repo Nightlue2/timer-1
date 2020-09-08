@@ -18,15 +18,23 @@ const getCurrentTime = () => {
         date.getTime()
     ];
 };
-const getEndTime = () => {
-    if (currentTime[1] + 40 >= 60) {
-        endTime = [
-            currentTime[0] + 1,
-            (currentTime[1] + 40) % 60,
-            currentTime[2]
-        ];
+const getEndTime = seconds => {
+    if (seconds) {
+        minutes = Math.floor((seconds + currentTime[2]) / 60);
+        endTime[2] = (seconds + currentTime[2]) % 60;
+        hours = Math.floor((minutes + currentTime[1]) / 60);
+        endTime[1] = (minutes + currentTime[1]) % 60;
+        endTime[0] = hours + currentTime[0];
     } else {
-        endTime = [currentTime[0], currentTime[1] + 40, currentTime[2]];
+        if (currentTime[1] + 40 >= 60) {
+            endTime = [
+                currentTime[0] + 1,
+                (currentTime[1] + 40) % 60,
+                currentTime[2]
+            ];
+        } else {
+            endTime = [currentTime[0], currentTime[1] + 40, currentTime[2]];
+        }
     }
 };
 const calcSeconds = x => {
@@ -76,15 +84,15 @@ const timeObj = {
     restSeconds: null,
     timeoutId: null,
     intervalId: null,
-    init() {
+    init(seconds) {
         this.clear();
-        this.refresh();
+        this.refresh(seconds);
         this.historyTime = calcSeconds(currentTime);
         this.timer();
     },
-    refresh() {
+    refresh(seconds) {
         getCurrentTime();
-        getEndTime();
+        getEndTime(seconds);
     },
     clear() {
         if (this.timeoutId) {
@@ -99,25 +107,19 @@ const timeObj = {
     pause() {
         if (this.timeoutId) {
             this.clear();
-            this.refresh();
+            getCurrentTime();
+
             this.restSeconds =
                 40 * 60 - (calcSeconds(currentTime) - this.historyTime);
         }
     },
     play() {
         if (this.restSeconds) {
-            this.historyTime = null;
-            this.init();
+            this.init(this.restSeconds);
             this.restSeconds = null;
         } else if (this.timeoutId) {
             const answer = confirm("当前正在计时，确定要重置吗？");
-            if (answer) {
-                this.clear();
-                this.restSeconds = null;
-                this.init();
-            }
-        } else {
-            this.init();
+            answer ? this.init() : console.log();
         }
     },
     stop() {
@@ -130,7 +132,8 @@ const timeObj = {
         this.intervalId = setInterval(() => {
             getCurrentTime();
             if (endTime[0] && endTime[1] && endTime[2]) {
-                let diff = calcTime(endTime) - calcTime(currentTime);
+                let diff = calcSeconds(endTime) - calcSeconds(currentTime);
+                console.log(diff);
                 if (diff) {
                     const minute = Math.floor(diff / 60);
                     if (minute < 10) minute = "0" + minute;
@@ -141,7 +144,7 @@ const timeObj = {
                     clearInterval(this.intervalId);
                 }
             }
-        }, 60000);
+        }, 1000);
         this.timeoutId = setTimeout(
             function() {
                 changeTitle.call(this);
