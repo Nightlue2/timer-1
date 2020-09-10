@@ -55,6 +55,7 @@ const timeObj = {
         }
         this.render();
         this.timer();
+        return 1;
     },
     clear() {
         if (this.intervalId) {
@@ -81,7 +82,6 @@ const timeObj = {
         for (let i = 0; i < 3; i++) {
             showTime[i] = goalTime[i];
         }
-
         this.render();
     },
     render() {
@@ -113,6 +113,7 @@ const timeObj = {
             minute = "" + showTime[1];
         }
         show.textContent = hour + ":" + minute + ":" + second;
+        return 1;
     },
     timer() {
         this.intervalId = setInterval(
@@ -145,6 +146,7 @@ const timeObj = {
             }.bind(this),
             1000
         );
+        return this.intervalId;
     }
 };
 buttonlist.addEventListener("click", function(e) {
