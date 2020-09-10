@@ -7,7 +7,7 @@ const stop = document.querySelector("#stop");
 let triggerButton = document.createEvent("HTMLEvents");
 triggerButton.initEvent("click", false, false);
 let showTime = [0, 0, 0];
-const goalTime = [0, 40, 0];
+const goalTime = [0, 10, 0];
 
 const changeTitle = function() {
     const keywords = "到点了！到点了！起来运动啦！起来运动啦！";
@@ -50,8 +50,6 @@ const timeObj = {
     intervalId: null,
     init() {
         this.clear();
-        document.querySelector(".strong") &&
-            document.querySelector(".strong").classList.remove("strong");
         for (let i = 0; i < 3; i++) {
             showTime[i] = goalTime[i];
         }
@@ -83,10 +81,14 @@ const timeObj = {
         for (let i = 0; i < 3; i++) {
             showTime[i] = goalTime[i];
         }
+
         this.render();
     },
     render() {
         let hour, minute, second;
+        !(showTime[0] === 0 && showTime[1] < 10) &&
+            document.querySelector(".strong") &&
+            document.querySelector(".strong").classList.remove("strong");
         if (showTime[2] < 10) {
             second = "0" + showTime[2];
         } else {
@@ -168,7 +170,6 @@ buttonlist.addEventListener("click", function(e) {
 replay.onclick = function() {
     setTimeout(() => {
         removeClass();
-        console.log("这里是replay");
         timeObj.stop();
         timeObj.init();
     }, 1000);
