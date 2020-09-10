@@ -4,45 +4,12 @@ const pause = document.querySelector("#pause");
 const play = document.querySelector("#play");
 const replay = document.querySelector("#replay");
 const stop = document.querySelector("#stop");
-const triggerButton = new Event("click");
+let triggerButton = document.createEvent("HTMLEvents");
+triggerButton.initEvent("click", false, false);
+let showTime = [0, 0, 0];
+const goalTime = [0, 40, 0];
 
-let date; //date不能为常量
-let currentTime = [null, null, null, null];
-let endTime = [null, null, null];
-const getCurrentTime = () => {
-    date = new Date();
-    currentTime = [
-        date.getHours(),
-        date.getMinutes(),
-        date.getSeconds(),
-        date.getTime()
-    ];
-};
-const getEndTime = seconds => {
-    if (seconds) {
-        minutes = Math.floor((seconds + currentTime[2]) / 60);
-        endTime[2] = (seconds + currentTime[2]) % 60;
-        hours = Math.floor((minutes + currentTime[1]) / 60);
-        endTime[1] = (minutes + currentTime[1]) % 60;
-        endTime[0] = hours + currentTime[0];
-    } else {
-        if (currentTime[1] + 40 >= 60) {
-            endTime = [
-                currentTime[0] + 1,
-                (currentTime[1] + 40) % 60,
-                currentTime[2]
-            ];
-        } else {
-            endTime = [currentTime[0], currentTime[1] + 40, currentTime[2]];
-        }
-    }
-};
-const calcSeconds = x => {
-    //转换成秒
-    return x[0] * 3600 + x[1] * 60 + x[2];
-};
 const changeTitle = function() {
-    if (this.timeoutId === null) return;
     const keywords = "到点了！到点了！起来运动啦！起来运动啦！";
     let keyArray = keywords.split("");
     let tick = 0;
@@ -59,7 +26,7 @@ const changeTitle = function() {
             }
         });
     };
-    const intervalId = setInterval(tempF, 70);
+    const intervalId = setInterval(tempF, 30);
 };
 const addClass = function(target) {
     const selectButton = ["stop", "pause"];
@@ -68,9 +35,9 @@ const addClass = function(target) {
         target.classList.remove("normal");
     }
 };
-const removeClass = function() {
+const removeClass = function(x) {
     const target = document.querySelector(".selected");
-    if (target) {
+    if (target && target.id !== x) {
         target.classList.remove("selected");
         target.classList.add("normal");
         target.classList.add("animation-once");
@@ -80,87 +47,109 @@ const removeClass = function() {
     }
 };
 const timeObj = {
-    historyTime: null,
-    restSeconds: null,
-    timeoutId: null,
     intervalId: null,
-    init(seconds) {
+    init() {
         this.clear();
-        this.refresh(seconds);
-        this.historyTime = calcSeconds(currentTime);
+        document.querySelector(".strong") &&
+            document.querySelector(".strong").classList.remove("strong");
+        for (let i = 0; i < 3; i++) {
+            showTime[i] = goalTime[i];
+        }
+        this.render();
         this.timer();
     },
-    refresh(seconds) {
-        getCurrentTime();
-        getEndTime(seconds);
-    },
     clear() {
-        if (this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-        }
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
     },
-    pause() {
-        if (this.timeoutId) {
-            this.clear();
-            getCurrentTime();
-
-            this.restSeconds =
-                40 * 60 - (calcSeconds(currentTime) - this.historyTime);
-        }
-    },
     play() {
-        if (this.restSeconds) {
-            this.init(this.restSeconds);
-            this.restSeconds = null;
-        } else if (this.timeoutId) {
+        if (this.intervalId) {
+            this.clear();
             const answer = confirm("当前正在计时，确定要重置吗？");
-            answer ? this.init() : console.log();
+            answer ? this.init() : this.render() && this.timer();
+        } else if (
+            showTime[0] === 0 &&
+            showTime[1] === 0 &&
+            showTime[2] === 0
+        ) {
+        } else {
+            this.timer();
         }
     },
     stop() {
         this.clear();
-        this.historyTime = null;
-        this.restSeconds = null;
-        show.textContent = "0:" + 40;
+        for (let i = 0; i < 3; i++) {
+            showTime[i] = goalTime[i];
+        }
+        this.render();
+    },
+    render() {
+        let hour, minute, second;
+        if (showTime[2] < 10) {
+            second = "0" + showTime[2];
+        } else {
+            second = "" + showTime[2];
+        }
+        if (showTime[1] < 10) {
+            if (showTime[0] < 10 && showTime[0] > 0) {
+                hour = "0" + showTime[0];
+            } else if (showTime[0] === 0) {
+                hour = "0" + showTime[0];
+                show.classList.add("strong");
+            } else {
+                hour = "" + showTime[0];
+            }
+            minute = "0" + showTime[1];
+        } else {
+            if (showTime[0] < 10) {
+                hour = "0" + showTime[0];
+            } else {
+                hour = "" + showTime[0];
+            }
+            minute = "" + showTime[1];
+        }
+        show.textContent = hour + ":" + minute + ":" + second;
     },
     timer() {
-        this.intervalId = setInterval(() => {
-            getCurrentTime();
-            if (endTime[0] && endTime[1] && endTime[2]) {
-                let diff = calcSeconds(endTime) - calcSeconds(currentTime);
-                if (diff) {
-                    const minute = Math.floor(diff / 60);
-                    if (minute < 10) minute = "0" + minute;
-                    show.textContent = "0:" + minute;
-                } else {
-                    show.textContent = "0:00";
-                    show.classList.add("strong");
-                    clearInterval(this.intervalId);
-                }
-            }
-        }, 1000);
-        this.timeoutId = setTimeout(
+        this.intervalId = setInterval(
             function() {
-                changeTitle.call(this);
-                document.title = "计时器";
-                setTimeout(() => {
+                if (
+                    showTime[0] === showTime[1] &&
+                    showTime[1] === showTime[2] &&
+                    showTime[2] === 0
+                ) {
+                    this.render();
+                    changeTitle.call(this);
+                    document.title = "计时器";
                     replay.dispatchEvent(triggerButton);
-                }, 3000);
+                    clearInterval(this.intervalId);
+                } else {
+                    if (--showTime[2] === -1) {
+                        if (--showTime[1] === -1) {
+                            if (--showTime[0] === -1) {
+                                showTime[0]++;
+                                showTime[1]++;
+                            } else {
+                                showTime[1] += 60;
+                            }
+                        } else {
+                            showTime[2] += 60;
+                        }
+                    }
+                    this.render();
+                }
             }.bind(this),
-            this.restSeconds * 1000 || 40 * 60 * 1000
+            1000
         );
     }
 };
-buttonlist.addEventListener("click", e => {
+buttonlist.addEventListener("click", function(e) {
     switch (e.target) {
         case pause:
-            timeObj.pause();
-            removeClass();
+            timeObj.clear();
+            removeClass("pause");
             addClass(e.target);
             break;
         case play:
@@ -169,16 +158,20 @@ buttonlist.addEventListener("click", e => {
             break;
         case stop:
             timeObj.stop();
-            removeClass();
+            removeClass("stop");
             addClass(e.target);
-            break;
-        case replay:
-            removeClass();
-            timeObj.init();
             break;
         default:
             console.log();
     }
 });
+replay.onclick = function() {
+    setTimeout(() => {
+        removeClass();
+        console.log("这里是replay");
+        timeObj.stop();
+        timeObj.init();
+    }, 1000);
+};
+Object.freeze(goalTime);
 timeObj.init();
-show.textContent = "0:" + 40;
