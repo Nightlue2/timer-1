@@ -1,0 +1,264 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+*::before,
+::after {
+  box-sizing: border-box;
+}
+body {
+  background: rgba(208, 226, 209, 0.918);
+  font-size: 24px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+#wrapper {
+  display: flex;
+  flex-flow: column wrap;
+  height: 500px;
+  width: 800px;
+  background: rgba(244, 245, 243, 0.7);
+  border-radius: 10px;
+}
+.show {
+  font-size: 78px;
+  color: rgb(99, 102, 88);
+  height: 285px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.inputWrapper{
+  border: 1px solid #aaa;
+  border-radius: 7px;width: 180px;
+  height: 36px;
+  position: relative;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  transition: opacity 0.28s ease-out,visibility 0.28s ease-out;
+  opacity: 0;
+  visibility: hidden;
+}
+.inputWrapper > .setTime {
+  border:none;
+  background-color: transparent;
+  font-size: 16px;
+  color: #666;
+}
+.inputWrapper.showOff{
+  opacity: 1;
+  visibility: visible;
+}
+.inputWrapper > .submit {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+  position: relative;
+  border: none;
+  color: #666;
+}
+.strong {
+  color: rgb(209, 54, 54);
+}
+.hide {
+  width: 100%;
+}
+#buttonListWrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  
+}
+.buttonList {
+  padding: 0 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+}
+.buttonList > button {
+  font-size: inherit;
+  border-radius: 50%;
+  color: white;
+  width: 70px;
+  height: 68px;
+}
+button:focus {
+  outline: none;
+}
+@media (min-width: 900px) {
+  #buttonListWrap{
+    height: 130px;
+  }
+  .buttonList{
+    min-width: 578px;
+  }
+  .hide{
+    height: 85px;
+  }
+  main > .iconWrapper{
+    left:-6%;
+    top:2%;
+  }
+  .inputWrapper{
+    left:-30%;
+    top:-5%;
+  }
+  .inputWrapper > .setTime{
+    padding-left: 29px;
+  }
+  .inputWrapper > .submit{
+    margin-right: 2%;
+  }
+  button:hover {
+    cursor: pointer;
+  }
+  .normal:hover {
+    background-color: rgb(42, 182, 42);
+  }
+  .normal:hover .icon {
+    fill: white;
+  }
+  #play {
+    transition: background-color 0.4s ease-out, color 0.4s ease-out;
+  }
+  #play:active {
+    background-color: rgb(202, 255, 195);
+    color: rgb(1, 163, 1);
+  }
+  main > .iconWrapper:hover {
+    cursor: pointer;
+  }
+}
+
+.selected {
+  background: rgb(187, 80, 8);
+  border: none;
+}
+.normal {
+  transition: background-color 0.38s ease-out;
+  border: 1px solid rgb(104, 212, 85);
+}
+
+.animation-once {
+  animation: goBack 0.3s ease-out;
+}
+.animation-settingSwitch{
+  animation: turn-out 0.5s ease-out;
+}
+#replay {
+  display: none;
+}
+
+@keyframes goBack {
+  0% {
+    background-color: rgb(187, 80, 8);
+  }
+
+  100% {
+    /* background-color: rgb(104, 212, 85); */
+    background-color: white;
+  }
+}
+@keyframes turn-out{
+  0%{
+    visibility: visible;
+    opacity: 1;
+  }
+  100%{
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+button .icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: rgb(42, 182, 42);
+  transition: fill 0.38s ease-out;
+}
+.selected .icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: #fff;
+}
+main > .iconWrapper{
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+main > .iconWrapper > svg.icon {
+  font-size: 36px;
+  width:1em;
+  height:1em;
+  vertical-align: -0.15em;
+  fill: #999;
+  overflow: hidden;
+}
+/* main > .icon:hover {
+  cursor: pointer;
+} */
+@media (max-width: 480px) {
+  #wrapper {
+    width: 96vw;
+    height: 100vw;
+  }
+  .show {
+    font-size: 48px;
+    height: 58vw;
+    flex-grow: 0;
+  }
+  .inputWrapper{
+    width:45vw;
+    left:-57vw;
+    top:-6.6vw;
+  }
+  .inputWrapper > .setTime {
+    margin-left:5vw;
+    padding-right: 2vw;
+  }
+  .hide {
+    height:10vw;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+  #buttonListWrap {
+    height: 26vw;
+  }
+  .buttonList {
+    width: 100%;
+    padding: 0 8vw;
+  }
+  .buttonList > button {
+    width: 16vw;
+    height: 15.5vw;
+    font-size: 22px;
+  }
+  main >  .iconWrapper  {
+    left: -11vw;
+    top: 3vw;
+  }
+  #play {
+    transition: background-color 0.38s ease-out, color 0.38s ease-out;
+  }
+  #play:active {
+    background-color: rgb(42, 182, 42);
+    color: white;
+  }
+}
+
+
+/*# sourceMappingURL=/style.e308ff8e.css.map */

@@ -12,7 +12,7 @@ let triggerButton = document.createEvent("HTMLEvents");
 triggerButton.initEvent("click", false, false);
 const operation = { pause: pause, play: play, stopButton: stopButton }; //绑定事件的对象
 let showTime = [0, 0, 0];
-let goalTime = JSON.parse(localStorage.getItem('time') || '[0,40,0]') || [0, 40, 0];
+let goalTime = JSON.parse(localStorage.getItem('time') || '[0,40,0]');
 
 const changeTitle = function () {
   let keyArray = "到点了！到点了！起来运动啦！起来运动啦！".split("");
@@ -165,7 +165,6 @@ const timeObj = {
       }.bind(this),
       1000
     );
-    return this.intervalId;
   },
 };
 addEvent(submit, function (e) {
