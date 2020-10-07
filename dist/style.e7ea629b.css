@@ -1,3 +1,7 @@
+@font-face{
+  font-family: 'Mukta-Medium';
+  src:url('Mukta-Medium.b40ec204.ttf');
+}
 * {
   margin: 0;
   padding: 0;
@@ -10,6 +14,7 @@
 body {
   background: rgba(208, 226, 209, 0.918);
   font-size: 24px;
+  font-family: Mukta-Medium;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -261,4 +266,4 @@ main > .iconWrapper > svg.icon {
 }
 
 
-/*# sourceMappingURL=/style.e308ff8e.css.map */
+/*# sourceMappingURL=style.e7ea629b.css.map */
