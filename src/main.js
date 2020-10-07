@@ -9,6 +9,7 @@ const stopButton = document.querySelector("#stop");
 const iconWrapper = document.querySelector(".iconWrapper");
 const inputWrapper = document.querySelector('.inputWrapper')
 let triggerButton = document.createEvent("HTMLEvents");
+
 triggerButton.initEvent("click", false, false);
 const operation = { pause: pause, play: play, stopButton: stopButton }; //绑定事件的对象
 let showTime = [0, 0, 0];
