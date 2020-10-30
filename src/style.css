@@ -164,7 +164,12 @@ button:focus {
   animation: turn-out 0.5s ease-out;
 }
 #replay {
-  display: none;
+  opacity: 0;
+  width:0;
+  height:0;
+  position: absolute;
+  left:10000px;
+  top:10000px;
 }
 
 @keyframes goBack {

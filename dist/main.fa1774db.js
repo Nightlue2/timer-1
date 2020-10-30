@@ -148,18 +148,14 @@ var changeTitle = function changeTitle() {
   var tick = 0;
 
   var tempFunc = function tempFunc() {
-    return new Promise(function (resolve) {
-      resolve();
-    }).then(function () {
-      tick++;
-      keyArray.push(keyArray.shift());
-      document.title = keyArray.join("");
+    tick++;
+    keyArray.push(keyArray.shift());
+    document.title = keyArray.join("");
 
-      if (tick === 80) {
-        clearInterval(intervalId);
-        document.title = "计时器";
-      }
-    });
+    if (tick === 80) {
+      clearInterval(intervalId);
+      document.title = "Timer-计时器";
+    }
   };
 
   var intervalId = setInterval(tempFunc, 30);
@@ -230,7 +226,7 @@ var timeObj = {
       this.clear();
       var answer = confirm("当前正在计时，确定要重置吗？");
       answer ? this.init() : this.render() && this.timer();
-    } else if (showTime[0] === 0 && showTime[1] === 0 && showTime[2] === 0) {} else {
+    } else {
       this.timer();
     }
   },
@@ -282,17 +278,15 @@ var timeObj = {
       if (showTime[0] === showTime[1] && showTime[1] === showTime[2] && showTime[2] === 0) {
         this.render();
         changeTitle.call(this);
-        document.title = "计时器";
         replay.dispatchEvent(triggerButton);
-        clearInterval(this.intervalId);
+        this.clear();
       } else {
         if (--showTime[2] === -1) {
+          //只需要解决两种借位情况
           if (--showTime[1] === -1) {
-            if (--showTime[0] === -1) {
-              showTime[0]++;
-              showTime[1]++;
-            } else {
+            if (--showTime[0] !== -1) {
               showTime[1] += 60;
+              showTime[2] += 60;
             }
           } else {
             showTime[2] += 60;
@@ -314,6 +308,7 @@ addEvent(submit, function (e) {
   }
 
   localStorage.setItem('time', JSON.stringify(goalTime));
+  removeClass();
   timeObj.init();
 });
 addEvent(iconWrapper, function () {
@@ -329,9 +324,9 @@ replay.onclick = function () {
     removeClass();
     timeObj.stop();
     timeObj.init();
-  }, 1000);
+  }, 2500);
 };
 
 timeObj.init();
 },{}]},{},["epB2"], null)
-//# sourceMappingURL=main.618c3646.js.map
+//# sourceMappingURL=main.fa1774db.js.map

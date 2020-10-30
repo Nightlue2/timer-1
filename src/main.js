@@ -7,7 +7,7 @@ const play = document.querySelector("#play");
 const replay = document.querySelector("#replay");
 const stopButton = document.querySelector("#stop");
 const iconWrapper = document.querySelector(".iconWrapper");
-const inputWrapper = document.querySelector('.inputWrapper')
+const inputWrapper = document.querySelector('.inputWrapper');
 let triggerButton = document.createEvent("HTMLEvents");
 
 triggerButton.initEvent("click", false, false);
@@ -19,17 +19,13 @@ const changeTitle = function () {
   let keyArray = "到点了！到点了！起来运动啦！起来运动啦！".split("");
   let tick = 0;
   const tempFunc = function () {
-    return new Promise((resolve) => {
-      resolve();
-    }).then(() => {
-      tick++;
-      keyArray.push(keyArray.shift());
-      document.title = keyArray.join("");
-      if (tick === 80) {
-        clearInterval(intervalId);
-        document.title = "计时器";
-      }
-    });
+    tick++;
+    keyArray.push(keyArray.shift());
+    document.title = keyArray.join("");
+    if (tick === 80) {
+      clearInterval(intervalId);
+      document.title = "Timer-计时器";
+    }
   };
   const intervalId = setInterval(tempFunc, 30);
 };
@@ -92,7 +88,6 @@ const timeObj = {
       this.clear();
       const answer = confirm("当前正在计时，确定要重置吗？");
       answer ? this.init() : this.render() && this.timer();
-    } else if (showTime[0] === 0 && showTime[1] === 0 && showTime[2] === 0) {
     } else {
       this.timer();
     }
@@ -145,17 +140,14 @@ const timeObj = {
         ) {
           this.render();
           changeTitle.call(this);
-          document.title = "计时器";
           replay.dispatchEvent(triggerButton);
-          clearInterval(this.intervalId);
+          this.clear();
         } else {
-          if (--showTime[2] === -1) {
+          if (--showTime[2] === -1) { //只需要解决两种借位情况
             if (--showTime[1] === -1) {
-              if (--showTime[0] === -1) {
-                showTime[0]++;
-                showTime[1]++;
-              } else {
+              if (--showTime[0] !== -1) {
                 showTime[1] += 60;
+                showTime[2] += 60;
               }
             } else {
               showTime[2] += 60;
@@ -176,6 +168,7 @@ addEvent(submit, function (e) {
     return;
   }
   localStorage.setItem('time', JSON.stringify(goalTime));
+  removeClass();
   timeObj.init();
 });
 addEvent(iconWrapper, function () {
@@ -189,6 +182,6 @@ replay.onclick = function () {
     removeClass();
     timeObj.stop();
     timeObj.init();
-  }, 1000);
+  }, 2500);
 };
 timeObj.init();
