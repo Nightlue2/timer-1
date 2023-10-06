@@ -13,7 +13,16 @@ let triggerButton = document.createEvent("HTMLEvents");
 triggerButton.initEvent("click", false, false);
 const operation = { pause: pause, play: play, stopButton: stopButton }; //绑定事件的对象
 let showTime = [0, 0, 0];
-let goalTime = JSON.parse(localStorage.getItem('time') || '[0,40,0]');
+let goalTime = initGoalTime(localStorage.getItem('time'));
+
+function initGoalTime(value) {
+  if (!value) return '[0,40,0]';
+  else {
+    const serialValue = JSON.parse(value);
+    if (Array.isArray(serialValue) && serialValue.every(v => typeof v === 'string')) return serialValue;
+    return [0, 40, 0];
+  }
+}
 
 const changeTitle = function () {
   let keyArray = "到点了！到点了！起来运动啦！起来运动啦！".split("");
@@ -161,6 +170,10 @@ const timeObj = {
   },
 };
 addEvent(submit, function (e) {
+  if (!diyTime.value) {
+    alert('倒计时不能为空！');
+    return;
+  }
   const arr = diyTime.value.split(":");
   goalTime[0] = parseInt(arr[0]);
   goalTime[1] = parseInt(arr[1]);
