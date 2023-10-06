@@ -1,3 +1,4 @@
+const defaultGoalTime = [0, 40, 0];
 const buttonList = document.querySelector(".buttonList");
 const show = document.querySelector(".show");
 const diyTime = document.querySelector(".setTime");
@@ -16,11 +17,11 @@ let showTime = [0, 0, 0];
 let goalTime = initGoalTime(localStorage.getItem('time'));
 
 function initGoalTime(value) {
-  if (!value) return '[0,40,0]';
+  if (!value) return defaultGoalTime;
   else {
     const serialValue = JSON.parse(value);
-    if (Array.isArray(serialValue) && serialValue.every(v => typeof v === 'string')) return serialValue;
-    return [0, 40, 0];
+    if (Array.isArray(serialValue) && serialValue.every(v => typeof v === 'number')) return serialValue;
+    return defaultGoalTime;
   }
 }
 
